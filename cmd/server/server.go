@@ -7,8 +7,6 @@ import (
 	"tree/cmd/server/handlers"
 )
 
-const SERVER_FILE = "server.json"
-
 type HttpPortNumber int
 
 type TreeServer struct {

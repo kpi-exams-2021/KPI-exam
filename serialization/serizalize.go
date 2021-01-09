@@ -17,7 +17,7 @@ func Serialize(tree *trees.Node, writer io.Writer) error {
 }
 
 func ToFile(tree *trees.Node, filename string) error {
-	f, err := os.Create(filename);
+	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
