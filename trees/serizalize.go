@@ -1,4 +1,4 @@
-package serialization
+package trees
 
 import (
 	"bytes"
@@ -6,17 +6,16 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"tree/trees"
 )
 
-func Serialize(tree *trees.Node, writer io.Writer) error {
+func Serialize(tree *Node, writer io.Writer) error {
 	if err := json.NewEncoder(writer).Encode(tree); err != nil {
 		return err
 	}
 	return nil
 }
 
-func ToFile(tree *trees.Node, filename string) error {
+func ToFile(tree *Node, filename string) error {
 	f, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -24,18 +23,18 @@ func ToFile(tree *trees.Node, filename string) error {
 	return Serialize(tree, f)
 }
 
-func Deserialize(reader io.Reader) (*trees.Node, error) {
-	tree := trees.Tree(0, nil, nil)
+func Deserialize(reader io.Reader) (*Node, error) {
+	tree := Tree(0, nil, nil)
 	if err := json.NewDecoder(reader).Decode(tree); err != nil {
 		return nil, err
 	}
-	tree.ForEach(func(n *trees.Node) {
+	tree.ForEach(func(n *Node) {
 		n.Init()
 	})
 	return tree, nil
 }
 
-func FromFile(filename string) (*trees.Node, error) {
+func FromFile(filename string) (*Node, error) {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err

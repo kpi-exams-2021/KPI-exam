@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"tree/serialization"
+	"tree/trees"
 )
 
 type Api string
@@ -30,13 +30,13 @@ func (c *TreeClient) GetTree() {
 		return
 	}
 
-	tree, err := serialization.Deserialize(r.Body)
+	tree, err := trees.Deserialize(r.Body)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	if err = serialization.ToFile(tree, c.filename); err != nil {
+	if err = trees.ToFile(tree, c.filename); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -65,13 +65,13 @@ func (c *TreeClient) GetOp() {
 		return
 	}
 
-	tree, err := serialization.Deserialize(r.Body)
+	tree, err := trees.Deserialize(r.Body)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	if err = serialization.ToFile(tree, c.filename); err != nil {
+	if err = trees.ToFile(tree, c.filename); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -100,14 +100,14 @@ func (c *TreeClient) GetTreeAndMakeOp() {
 		return
 	}
 
-	tree, err := serialization.Deserialize(r.Body)
+	tree, err := trees.Deserialize(r.Body)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
 	tree.Sum()
-	if err = serialization.ToFile(tree, c.filename); err != nil {
+	if err = trees.ToFile(tree, c.filename); err != nil {
 		log.Fatal(err)
 	}
 }

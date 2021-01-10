@@ -1,9 +1,9 @@
 package trees
 
-type nothing struct {}
+import "tree/utils"
 
 type Node struct {
-	ch    chan nothing
+	ch    chan utils.Nothing
 	Value int
 	Left  *Node
 	Right *Node
@@ -19,7 +19,7 @@ func (n *Node) hasRight() bool {
 
 func Tree(value int, left *Node, right *Node) *Node {
 	return &Node{
-		ch:    make(chan nothing, 2),
+		ch:    make(chan utils.Nothing, 2),
 		Value: value,
 		Left:  left,
 		Right: right,
@@ -35,7 +35,7 @@ func (n *Node) Sum() {
 		wait++
 		go func() {
 			n.Left.Sum()
-			n.ch <- nothing{}
+			n.ch <- utils.Nothing{}
 		}()
 	}
 
@@ -44,7 +44,7 @@ func (n *Node) Sum() {
 		wait++
 		go func() {
 			n.Right.Sum()
-			n.ch <- nothing{}
+			n.ch <- utils.Nothing{}
 		}()
 	}
 
@@ -55,7 +55,7 @@ func (n *Node) Sum() {
 }
 
 func (n *Node) Init() {
-	n.ch = make(chan nothing, 2)
+	n.ch = make(chan utils.Nothing, 2)
 }
 
 func (n *Node) ForEach(operation func(n *Node)) {
