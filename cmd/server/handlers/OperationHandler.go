@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"net/http"
-	"tree/trees"
+	"tree/ttrees"
 	"tree/utils"
 )
 
@@ -21,28 +21,28 @@ func OperationHttpHandler(filename string) OperationHandler {
 }
 
 func handleOpGet(rw http.ResponseWriter, filename string) {
-	tree, err := trees.FromFile(filename)
+	tree, err := ttrees.FromFile(filename)
 	if err != nil {
 		utils.WriteError(rw, err)
 	}
 
 	rw.Header().Set("content-type", "application/json")
 	rw.WriteHeader(200)
-	tree.Sum()
-	err = trees.Serialize(tree, rw)
+	tree.Op()
+	err = ttrees.Serialize(tree, rw)
 	if err != nil {
 		utils.WriteError(rw, err)
 	}
 }
 
 func handleOpPost(rw http.ResponseWriter, r *http.Request, filename string) {
-	tree, err := trees.Deserialize(r.Body)
+	tree, err := ttrees.Deserialize(r.Body)
 	if err != nil {
 		utils.WriteError(rw, err)
 	}
 
-	tree.Sum()
-	err = trees.ToFile(tree, filename)
+	tree.Op()
+	err = ttrees.ToFile(tree, filename)
 	if err != nil {
 		utils.WriteError(rw, err)
 	}

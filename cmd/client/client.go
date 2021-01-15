@@ -1,10 +1,11 @@
 package client
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"os"
-	"tree/trees"
+	"tree/ttrees"
 )
 
 type Api string
@@ -30,13 +31,13 @@ func (c *TreeClient) GetTree() {
 		return
 	}
 
-	tree, err := trees.Deserialize(r.Body)
+	tree, err := ttrees.Deserialize(r.Body)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	if err = trees.ToFile(tree, c.filename); err != nil {
+	if err = ttrees.ToFile(tree, c.filename); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -65,13 +66,13 @@ func (c *TreeClient) GetOp() {
 		return
 	}
 
-	tree, err := trees.Deserialize(r.Body)
+	tree, err := ttrees.Deserialize(r.Body)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	if err = trees.ToFile(tree, c.filename); err != nil {
+	if err = ttrees.ToFile(tree, c.filename); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -100,14 +101,41 @@ func (c *TreeClient) GetTreeAndMakeOp() {
 		return
 	}
 
-	tree, err := trees.Deserialize(r.Body)
+	tree, err := ttrees.Deserialize(r.Body)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	tree.Sum()
-	if err = trees.ToFile(tree, c.filename); err != nil {
+	tree.Op()
+	if err = ttrees.ToFile(tree, c.filename); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (c *TreeClient) MakeOpPostTree() {
+	ttree, err := ttrees.FromFile(c.filename)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	ttree.Op()
+
+	var serialized bytes.Buffer
+	err = ttrees.Serialize(ttree, &serialized)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	r, err := c.client.Post(c.api, "application/json", &serialized)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	if r.StatusCode != 200 {
+		log.Fatalf("Error: %d", r.StatusCode)
+	}
+	log.Println("POSTed successfully")
 }

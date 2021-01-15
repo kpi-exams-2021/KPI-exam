@@ -8,5 +8,5 @@ func RunClient() {
 		log.Fatal(err)
 	}
 
-	client.GetTreeAndMakeOp()
+	client.MakeOpPostTree()
 }
